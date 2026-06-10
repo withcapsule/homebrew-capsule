@@ -1,0 +1,61 @@
+name: Update Formula
+
+on:
+    repository_dispatch:
+        types: [update-formula]
+
+jobs:
+    update:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Compute SHA256s
+              id: sha
+              run: |
+                  VERSION="${{ github.event.client_payload.version }}"
+                  BASE="https://github.com/withcapsule/CLI/releases/download/v${VERSION}"
+
+                  SOURCE_SHA=$(curl -sL "https://github.com/withcapsule/CLI/archive/refs/tags/v${VERSION}.tar.gz" | shasum -a 256 | awk '{print $1}')
+                  LINUX_X86_SHA=$(curl -sL "${BASE}/capsule-x86_64-linux.tar.gz" | shasum -a 256 | awk '{print $1}')
+                  LINUX_ARM_SHA=$(curl -sL "${BASE}/capsule-aarch64-linux.tar.gz" | shasum -a 256 | awk '{print $1}')
+
+                  echo "version=${VERSION}" >> $GITHUB_OUTPUT
+                  echo "source_sha=${SOURCE_SHA}" >> $GITHUB_OUTPUT
+                  echo "linux_x86_sha=${LINUX_X86_SHA}" >> $GITHUB_OUTPUT
+                  echo "linux_arm_sha=${LINUX_ARM_SHA}" >> $GITHUB_OUTPUT
+
+            - name: Update formula
+              run: |
+                  VERSION="${{ steps.sha.outputs.version }}"
+                  SOURCE_SHA="${{ steps.sha.outputs.source_sha }}"
+                  LINUX_X86_SHA="${{ steps.sha.outputs.linux_x86_sha }}"
+                  LINUX_ARM_SHA="${{ steps.sha.outputs.linux_arm_sha }}"
+
+                  sed -i "s/version \".*\"/version \"${VERSION}\"/" Formula/capsule.rb
+
+                  awk -v sha="${SOURCE_SHA}" '
+                    /on_macos/,/end/ { if (/sha256/) { sub(/sha256 ".*"/, "sha256 \"" sha "\""); found=1 } }
+                    { print }
+                  ' Formula/capsule.rb > Formula/capsule.rb.tmp && mv Formula/capsule.rb.tmp Formula/capsule.rb
+
+                  awk -v sha="${LINUX_ARM_SHA}" '
+                    /on_arm/,/end/ { if (/sha256/ && !done) { sub(/sha256 ".*"/, "sha256 \"" sha "\""); done=1 } }
+                    { print }
+                  ' Formula/capsule.rb > Formula/capsule.rb.tmp && mv Formula/capsule.rb.tmp Formula/capsule.rb
+
+                  awk -v sha="${LINUX_X86_SHA}" '
+                    /on_intel/,/end/ { if (/sha256/ && !done) { sub(/sha256 ".*"/, "sha256 \"" sha "\""); done=1 } }
+                    { print }
+                  ' Formula/capsule.rb > Formula/capsule.rb.tmp && mv Formula/capsule.rb.tmp Formula/capsule.rb
+
+            - name: Commit and push
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add Formula/capsule.rb
+                  git commit -m "chore: update formula to v${{ steps.sha.outputs.version }}"
+                  git push
