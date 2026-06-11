@@ -1,7 +1,7 @@
 class Capsule < Formula
   desc "CLI for the Capsule server"
   homepage "https://github.com/withcapsule/CLI"
-  version "0.1.4"
+  version "0.1.5"
   license "MIT"
 
   # build from source
@@ -16,11 +16,11 @@ class Capsule < Formula
   on_linux do
     on_arm do
       url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-aarch64-linux.tar.gz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "f4d6713b3f0e245c578a3516c85739e9f2565da43074afef5e1492f23806b974"
     end
     on_intel do
       url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-x86_64-linux.tar.gz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "35e4f994220b3bdacb6fb3e21be74452e6a611c1907c084319719468a30c15a6"
     end
   end
 
