@@ -7,7 +7,7 @@ class Capsule < Formula
 	url "https://github.com/withcapsule/CLI/archive/refs/tags/v#{version}.tar.gz"
 	sha256 "e1138ff715f4a6ab76893758a53ca33d6ba25cf3d87d2eecae5b9f6f73e37539"
 
-	depends_on "rust" => :build if build.build_from_source?
+	depends_on "rust" => :build
 
 	on_macos do
 		on_arm do
