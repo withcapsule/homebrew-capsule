@@ -1,33 +1,33 @@
 class Capsule < Formula
 	desc "CLI for the Capsule server"
 	homepage "https://github.com/withcapsule/CLI"
-	version "0.1.9"
+	version "0.1.5"
 	license "MIT"
 
 	url "https://github.com/withcapsule/CLI/archive/refs/tags/v#{version}.tar.gz"
-	sha256 "f0c77c320ffbef5314c3ec4374411985a8c1ef0691cd50c21bff3a061d0605b5"
+	sha256 "REPLACE_WITH_SHA256"
 
 	depends_on "rust" => :build if build.build_from_source?
 
 	on_macos do
 		on_arm do
 			url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-aarch64-macos.tar.gz"
-			sha256 "76dc937787d71cde7a8466c435bf2ee3af856b29c477507501c40e6becddb390"
+			sha256 "REPLACE_WITH_SHA256"
 		end
 		on_intel do
 			url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-x86_64-macos.tar.gz"
-			sha256 "6fcff11bd65a9091d51d0bd1fc3718ddd0870f84f2166ac6e132e740afb88e9b"
+			sha256 "REPLACE_WITH_SHA256"
 		end
 	end
 
 	on_linux do
 		on_arm do
 			url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-aarch64-linux.tar.gz"
-			sha256 "0812f20b904699d1786f653742444380cd80cb755740a2e6835d03d6f39354ae"
+			sha256 "f4d6713b3f0e245c578a3516c85739e9f2565da43074afef5e1492f23806b974"
 		end
 		on_intel do
 			url "https://github.com/withcapsule/CLI/releases/download/v#{version}/capsule-x86_64-linux.tar.gz"
-			sha256 "613086ecb7774acc187c020cb30116f7c1a48b3c3b351cd73358aec67c75e5bc"
+			sha256 "35e4f994220b3bdacb6fb3e21be74452e6a611c1907c084319719468a30c15a6"
 		end
 	end
 
